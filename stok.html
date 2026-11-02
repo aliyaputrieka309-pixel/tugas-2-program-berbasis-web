@@ -1,0 +1,77 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<div id="app">
+  {{ pesan }}  <-- test mustaches dulu
+</div>
+<script src="js/stok-app.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stok Bahan Ajar - SITTA UT</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id="appStok">
+  <h2>Halaman Stok Bahan Ajar</h2>
+  <a href="index.html">← Kembali</a> | 
+  <button @click="showForm = !showForm" v-show="!showForm">+ Tambah Bahan Ajar</button>
+
+  <div v-show="showForm" style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+    <h4>Form Tambah (v-model + Validasi)</h4>
+    Kode: <input v-model="newItem.kode"> Judul: <input v-model="newItem.judul">
+    Qty: <input type="number" v-model.number="newItem.qty">
+    <button @click="tambahBahan">Simpan</button>
+  </div>
+
+  <h3>Filter (Dependent Options)</h3>
+  UT-Daerah: 
+  <select v-model="filterUpbjj">
+    <option value="">Semua</option>
+    <option v-for="u in upbjjList" :value="u">{{u}}</option>
+  </select>
+
+  <!-- Muncul setelah pilih UT-Daerah -->
+  <span v-if="filterUpbjj">
+    Kategori: 
+    <select v-model="filterKategori">
+      <option value="">Semua</option>
+      <option v-for="k in kategoriList" :value="k">{{k}}</option>
+    </select>
+  </span>
+
+  <label><input type="checkbox" v-model="filterReorder"> Hanya Re-order (qty < safety)</label>
+  <label><input type="checkbox" v-model="filterKosong"> Hanya Kosong (qty=0)</label>
+  
+  Sort: 
+  <select v-model="sortBy">
+    <option value="judul">Judul</option>
+    <option value="stok">Stok</option>
+    <option value="harga">Harga</option>
+  </select>
+  <button @click="resetFilter">Reset Filter</button>
+
+  <table>
+    <tr><th>Kode</th><th>Judul (v-text)</th><th>Kategori</th><th>UT-Daerah</th><th>Rak</th><th>Qty (v-model edit)</th><th>Safety</th><th>Status (v-if)</th><th>Catatan (v-html)</th></tr>
+    <tr v-for="item in filteredStok" :key="item.kode">
+      <td>{{item.kode}}</td>
+      <td v-text="item.judul"></td>
+      <td>{{item.kategori}}</td>
+      <td>{{item.upbjj}}</td>
+      <td>{{item.lokasiRak}}</td>
+      <td><input type="number" v-model.number="item.qty" style="width:60px" :style="{borderColor: statusClass(item)=='kosong'?'red':'#ccc'}"></td>
+      <td>{{item.safety}}</td>
+      <td :class="statusClass(item)">
+        <span v-if="item.qty==0">{{statusText(item)}}</span>
+        <span v-else-if="item.qty < item.safety">{{statusText(item)}}</span>
+        <span v-else>{{statusText(item)}}</span>
+      </td>
+      <td v-html="item.catatanHTML"></td>
+    </tr>
+  </table>
+  <p>Total tampil: {{filteredStok.length}} dari {{bahanAjar.length}}</p>
+</div>
+
+<script src="js/dataBahanAjar.js"></script>
+<script src="js/stok-app.js"></script>
+</body>
+</html>

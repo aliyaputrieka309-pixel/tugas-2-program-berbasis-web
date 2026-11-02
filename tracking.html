@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><title>Tracking DO</title><link rel="stylesheet" href="css/style.css"><script src="https://unpkg.com/vue@3/dist/vue.global.js"></script></head>
+<body>
+<div id="appTracking">
+<h2>Tracking Delivery Order (DO)</h2>
+<a href="index.html">← Kembali</a>
+
+<h3>Tambah DO Baru</h3>
+<p>Nomor DO (Auto Generate): <b>{{nextDONumber}}</b></p>
+NIM: <input v-model="form.nim" placeholder="isi manual">
+Nama: <input v-model="form.nama" placeholder="isi manual"><br><br>
+Ekspedisi (dari upbjjList/ekspedisiList): 
+<select v-model="form.ekspedisi">
+  <option v-for="e in ekspedisiList" :value="e">{{e}}</option>
+</select>
+<br><br>
+Paket Bahan Ajar:
+<select v-model="form.paketKode">
+  <option value="">-- Pilih Paket --</option>
+  <option v-for="p in paketList" :value="p.kodePaket">{{p.kodePaket}} - {{p.namaPaket}}</option>
+</select>
+
+<div v-if="selectedPaket" style="background:#f5f5f5; padding:10px; margin:10px 0;">
+  <b>Detail Isi Paket:</b> {{selectedPaket.kodePaket}} - {{selectedPaket.namaPaket}}<br>
+  Isi: {{selectedPaket.isi.join(', ')}}<br>
+  Harga: Rp {{selectedPaket.harga}}
+</div>
+
+<p>Tanggal Kirim: {{new Date().toLocaleDateString()}} (pakai Date())</p>
+<p>Total Harga: <b v-if="selectedPaket">Rp {{selectedPaket.harga}}</b></p>
+
+<button @click="tambahDO">Simpan DO</button>
+
+<h3>Daftar Tracking</h3>
+<table>
+<tr><th>No DO</th><th>NIM</th><th>Nama</th><th>Ekspedisi</th><th>Paket</th><th>Tgl</th><th>Total</th></tr>
+<tr v-for="t in trackingList"><td>{{t.noDO}}</td><td>{{t.nim}}</td><td>{{t.nama}}</td><td>{{t.ekspedisi}}</td><td>{{t.paket.namaPaket}}</td><td>{{t.tgl}}</td><td>Rp {{t.total}}</td></tr>
+</table>
+</div>
+
+<script src="js/dataBahanAjar.js"></script>
+<script src="js/tracking-app.js"></script>
+</body>
+</html>
